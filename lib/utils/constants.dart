@@ -1,4 +1,5 @@
 const String routeNameDashboard = 'dashboard';
+const String routeNameMyBottomBar = 'bottombar';
 const String routeNameBalanceSheet = 'balance_sheet';
 const String routeNameHeadPage = 'head_page';
 const String routeNameLogin = 'login';

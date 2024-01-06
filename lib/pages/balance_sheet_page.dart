@@ -5,6 +5,21 @@ class BalanceSheetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: Container(
+        color: Colors.yellowAccent,
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Balance Sheet",
+                textScaler: TextScaler.noScaling,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

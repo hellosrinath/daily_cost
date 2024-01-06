@@ -2,6 +2,7 @@ import 'package:daily_cost/pages/balance_sheet_page.dart';
 import 'package:daily_cost/pages/dashboard.dart';
 import 'package:daily_cost/pages/head_page.dart';
 import 'package:daily_cost/pages/login_page.dart';
+import 'package:daily_cost/pages/my_bottom_bar.dart';
 import 'package:daily_cost/pages/transaction_page.dart';
 import 'package:daily_cost/pages/transaction_report_page.dart';
 import 'package:daily_cost/utils/constants.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: routeNameLogin,
       routes: {
+        routeNameMyBottomBar: (context) => const MyBottomBar(),
         routeNameDashboard: (context) => const Dashboard(),
         routeNameHeadPage: (context) => const HeadPage(),
         routeNameBalanceSheet: (context) => const BalanceSheetPage(),
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
         routeNameTransaction: (context) => const TransactionPage(),
         routeNameTransactionReport: (context) => const TransactionReportPage()
       },
-      home: const Text("data"),
+      home: const MyBottomBar(),
     );
   }
 }

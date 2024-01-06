@@ -1,3 +1,4 @@
+import 'package:daily_cost/utils/constants.dart';
 import 'package:daily_cost/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 
@@ -93,9 +94,10 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) {
       final userName = _userNameController.text;
       final password = _passwordController.text;
-      showMessage(context, 'Login Success $userName, $password');
+     // showMessage(context, 'Login Success $userName, $password');
+      Navigator.pushReplacementNamed(context, routeNameMyBottomBar);
     } else {
-      showMessage(context, 'Login Failed');
+     // showMessage(context, 'Login Failed');
     }
   }
 

@@ -6,8 +6,19 @@ class HeadPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Head Create"),
+      body: Container(
+        color: Colors.redAccent,
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Head Page",
+                textScaler: TextScaler.noScaling,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

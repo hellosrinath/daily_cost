@@ -6,8 +6,19 @@ class TransactionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Transactions"),
+      body: Container(
+        color: Colors.blueGrey,
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Transaction",
+                textScaler: TextScaler.noScaling,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
