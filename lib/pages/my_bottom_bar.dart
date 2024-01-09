@@ -28,7 +28,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Colors.blueAccent,
       child: SafeArea(
         top: false,
         child: ClipRRect(
@@ -36,23 +36,23 @@ class _MyBottomBarState extends State<MyBottomBar> {
             extendBody: true,
             bottomNavigationBar: Theme(
               data: Theme.of(context).copyWith(
-                  iconTheme: const IconThemeData(color: Colors.blueAccent)),
+                  iconTheme: const IconThemeData(color: Colors.white)),
               child: CurvedNavigationBar(
                 key: _bottomNavigationKey,
                 index: 0,
                 height: 60.0,
                 items: const <Widget>[
-                  Icon(Icons.add, size: 30),
-                  Icon(Icons.list, size: 30),
-                  Icon(Icons.compare_arrows, size: 30),
-                  Icon(Icons.call_split, size: 30),
-                  Icon(Icons.perm_identity, size: 30),
+                  Icon(Icons.home_filled, size: 30),
+                  Icon(Icons.category_rounded, size: 30),
+                  Icon(Icons.add_box_rounded, size: 30),
+                  Icon(Icons.account_balance, size: 30),
+                  Icon(Icons.perm_identity_rounded, size: 30),
                 ],
-                /* color: Colors.blue,
-                buttonBackgroundColor: Colors.purple,*/
+                color: Colors.blue,
+                buttonBackgroundColor: Colors.blueAccent,
                 backgroundColor: Colors.transparent,
                 animationCurve: Curves.easeInOut,
-                animationDuration: const Duration(milliseconds: 600),
+                animationDuration: const Duration(milliseconds: 300),
                 onTap: (index) {
                   setState(() {
                     _page = index;

@@ -5,19 +5,16 @@ class TransactionReportPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.greenAccent,
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Transaction Report",
-                textScaler: TextScaler.noScaling,
-              ),
-            ],
-          ),
+    return const Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Transaction Report",
+              textScaler: TextScaler.noScaling,
+            ),
+          ],
         ),
       ),
     );
