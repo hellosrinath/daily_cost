@@ -8,22 +8,18 @@ class HeadPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         title: const Text('Create Head'),
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "No Head List. Please, click (+)\n button to add head...",
-              textAlign: TextAlign.center,
-              textScaler: TextScaler.noScaling,
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-          ],
-        ),
+      body: ListView.builder(
+        itemCount: 50,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text('Head Creation: $index'),
+            subtitle: const Text("test data"),
+            leading: const Icon(Icons.currency_bitcoin),
+          );
+        },
       ),
     );
   }

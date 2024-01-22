@@ -23,6 +23,7 @@ class _TransactionPageState extends State<TransactionPage> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: Colors.blueAccent,
             bottom: const TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.monetization_on_rounded, size: 40)),
@@ -36,7 +37,7 @@ class _TransactionPageState extends State<TransactionPage> {
               indicatorColor: Colors.blueAccent,
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorWeight: 6.0,
-              labelColor: Colors.blueAccent,
+              labelColor: Colors.white,
             ),
             title: const Text('Create Transaction and Head'),
           ),

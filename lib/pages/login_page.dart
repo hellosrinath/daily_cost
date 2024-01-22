@@ -1,6 +1,9 @@
+import 'package:daily_cost/models/app_user.dart';
+import 'package:daily_cost/providers/app_data_provider.dart';
 import 'package:daily_cost/utils/constants.dart';
 import 'package:daily_cost/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,8 +15,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool isObscure = true;
-  final _userNameController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _userNameController = TextEditingController(text: 'test');
+  final _passwordController = TextEditingController(text: '123');
 
   @override
   Widget build(BuildContext context) {
@@ -83,21 +86,34 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           )),
     );
   }
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
       final userName = _userNameController.text;
       final password = _passwordController.text;
-     // showMessage(context, 'Login Success $userName, $password');
-      Navigator.pushReplacementNamed(context, routeNameMyBottomBar);
+
+      final response =
+          await Provider.of<AppDataProvider>(context, listen: false)
+              .login(AppUser(
+        LoginId: userName,
+        password: password,
+      ));
+      if (!context.mounted) return;
+      if (response != null) {
+        debugPrint("Login Response: ${response.user.userName}");
+        showMessage(context, 'Welcome Back ${response.user.userName}');
+        Navigator.pushReplacementNamed(context, routeNameMyBottomBar);
+      }else{
+        showMessage(context, 'Login Failed');
+      }
     } else {
-     // showMessage(context, 'Login Failed');
+      showMessage(context, 'Login Failed');
     }
   }
 

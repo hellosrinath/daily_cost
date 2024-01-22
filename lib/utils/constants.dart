@@ -5,3 +5,7 @@ const String routeNameHeadPage = 'head_page';
 const String routeNameLogin = 'login';
 const String routeNameTransaction = 'transactions';
 const String routeNameTransactionReport = 'transaction_report';
+const String accessToken = 'accessToken';
+const String appUserName = 'appUserName';
+const String appCompanyId = 'appCompanyId';
+const String appUserId = 'appUserId';

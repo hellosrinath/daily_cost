@@ -5,17 +5,20 @@ class TransactionReportPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "Transaction Report",
-              textScaler: TextScaler.noScaling,
-            ),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
+        title: const Text('Transaction Report'),
+      ),
+      body: ListView.builder(
+        itemCount: 50,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text('Transactions report: $index'),
+            subtitle: const Text("test data"),
+            leading: const Icon(Icons.currency_bitcoin),
+          );
+        },
       ),
     );
   }
