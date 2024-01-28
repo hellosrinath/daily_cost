@@ -1,4 +1,4 @@
-import 'package:daily_cost/models/app_user.dart';
+import 'package:daily_cost/models/login/app_user.dart';
 import 'package:daily_cost/providers/app_data_provider.dart';
 import 'package:daily_cost/utils/constants.dart';
 import 'package:daily_cost/utils/helper_functions.dart';

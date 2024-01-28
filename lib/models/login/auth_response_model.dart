@@ -1,4 +1,4 @@
-import 'package:daily_cost/models/user.dart';
+import 'package:daily_cost/models/login/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'auth_response_model.freezed.dart';

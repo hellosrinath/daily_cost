@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 enum BestTutorSite { income, expense }
 
 class MyRadioButton extends StatefulWidget {
-  const MyRadioButton({super.key});
+  final Function(int) onSubmit;
+
+  const MyRadioButton({
+    super.key,
+    required this.onSubmit,
+  });
 
   @override
   State<MyRadioButton> createState() => _MyRadioButtonState();
@@ -24,6 +29,7 @@ class _MyRadioButtonState extends State<MyRadioButton> {
             onChanged: (BestTutorSite? value) {
               setState(() {
                 site = value!;
+                widget.onSubmit(1);
               });
             },
           ),
@@ -36,6 +42,7 @@ class _MyRadioButtonState extends State<MyRadioButton> {
             onChanged: (BestTutorSite? value) {
               setState(() {
                 site = value!;
+                widget.onSubmit(2);
               });
             },
           ),

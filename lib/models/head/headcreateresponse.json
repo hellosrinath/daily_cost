@@ -1,0 +1,20 @@
+{
+  "status": true,
+  "isAuthorized": true,
+  "message": "Success, data save done!",
+  "messageType": "Success",
+  "data": {
+    "compId": 102,
+    "id": 0,
+    "type": 2,
+    "name": "House Rent",
+    "createdBy": 10201,
+    "createdTime": null,
+    "createdIp": "54.86.50.139",
+    "updatedBy": 0,
+    "updatedTime": null,
+    "updatedIp": "",
+    "accTransactionAccMaster": [],
+    "accTransactionC": []
+  }
+}
