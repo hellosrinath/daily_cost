@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:daily_cost/customwidgets/my_radio_button.dart';
 import 'package:daily_cost/models/head/head_create_model.dart';
+import 'package:daily_cost/models/transaction/transaction_create_param.dart';
 import 'package:daily_cost/providers/app_data_provider.dart';
 import 'package:daily_cost/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +22,13 @@ class _TransactionPageState extends State<TransactionPage> {
   final headTextEditingController = TextEditingController();
   var type = 1;
 
+  final amountTextEditingController = TextEditingController();
+  final descriptionTextEditingController = TextEditingController();
+
   bool isFirst = true;
   List<HeadItem> headItem = [];
-  List<String> headList = ["Test"];
+  List<HeadItem> headItemCredit = [];
+  List<HeadItem> headItemDebit = [];
 
   @override
   void didChangeDependencies() {
@@ -36,18 +43,23 @@ class _TransactionPageState extends State<TransactionPage> {
         .getHeadList();
     if (response != null) {
       headItem.clear();
+      headItemCredit.clear();
+      headItemDebit.clear();
+
       headItem = response.data;
-      headList.clear();
       for (HeadItem item in headItem) {
-        headList.add(item.name);
+        if (item.type == 1) headItemCredit.add(item);
+        if (item.type == 2) headItemDebit.add(item);
       }
     }
     setState(() {});
     debugPrint('getHeads: ${headItem.length}');
   }
 
-  String selectedCreditValue = 'Select Credit Head';
-  String selectedDebitValue = 'Select Debit Head';
+  String selectedCreditValue = '--Select--';
+  int selectedCreditCode = 0;
+  String selectedDebitValue = '--Select--';
+  int selectedDebitCode = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +101,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: TextFormField(
+                          controller: amountTextEditingController,
                           decoration: const InputDecoration(
                               prefixIcon: Icon(Icons.monetization_on_outlined),
                               filled: true,
@@ -105,6 +118,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: TextFormField(
+                          controller: descriptionTextEditingController,
                           decoration: const InputDecoration(
                               prefixIcon: Icon(Icons.title),
                               filled: true,
@@ -118,6 +132,21 @@ class _TransactionPageState extends State<TransactionPage> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text('Select Credit Head'),
+                            ),
+                            SizedBox(width: 30),
+                            Expanded(
+                              child: Text('Select Debit Head'),
+                            ),
+                          ],
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: Row(
@@ -160,7 +189,10 @@ class _TransactionPageState extends State<TransactionPage> {
                               backgroundColor: Colors.blueAccent,
                               foregroundColor: Colors.white,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              _saveTransactions(
+                                  selectedCreditCode, selectedDebitCode);
+                            },
                             child: const Text(
                               'Save',
                               style: TextStyle(
@@ -235,14 +267,19 @@ class _TransactionPageState extends State<TransactionPage> {
       context: context,
       builder: (BuildContext context) {
         return ListView.builder(
-          itemCount: headItem.length,
+          itemCount:
+              isCreditHead ? headItemCredit.length : headItemDebit.length,
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
               onTap: () {
-                _selectValue(headItem[index].name, isCreditHead);
+                _selectValue(
+                    isCreditHead ? headItemCredit[index] : headItemDebit[index],
+                    isCreditHead);
               },
               child: ListTile(
-                title: Text(headItem[index].name),
+                title: Text(isCreditHead
+                    ? headItemCredit[index].name
+                    : headItemDebit[index].name),
                 subtitle: const Text("test data"),
                 leading: const Icon(Icons.currency_bitcoin),
               ),
@@ -253,15 +290,53 @@ class _TransactionPageState extends State<TransactionPage> {
     );
   }
 
-  void _selectValue(String value, bool isCreditHead) {
+  void _selectValue(HeadItem value, bool isCreditHead) {
     Navigator.pop(context); // Close the dropdown
     setState(() {
       if (isCreditHead) {
-        selectedCreditValue = value;
+        selectedCreditValue = value.name;
+        selectedCreditCode = value.id;
       } else {
-        selectedDebitValue = value;
+        selectedDebitValue = value.name;
+        selectedDebitCode = value.id;
       }
     });
+  }
+
+  void _saveTransactions(int creditCode, int debitCode) async {
+    if (formKey.currentState!.validate()) {
+      if (selectedCreditValue == "--Select--" ||
+          selectedDebitValue == "--Select--") {
+        showMessage(context, 'Select Credit/Debit Head');
+      } else {
+        try {
+          final response =
+              await Provider.of<AppDataProvider>(context, listen: false)
+                  .createTransaction(TransactionCreateParam(
+            TransDate: "2024-01-30",
+            CreditCode: creditCode,
+            DebitCode: debitCode,
+            Amount: int.parse(amountTextEditingController.text),
+            CreatedBy: await getUserId(),
+            Remarks: descriptionTextEditingController.text,
+          ));
+          if (!context.mounted) return;
+          if (response != null) {
+            if (response.status && response.isAuthorized) {
+              showMessage(context, response.message);
+              amountTextEditingController.text = '';
+              descriptionTextEditingController.text = '';
+            } else {
+              showMessage(context, response.message);
+            }
+          } else {
+            showMessage(context, "Failed to create Transaction");
+          }
+        } catch (e) {
+          showMessage(context, "Failed to create Transaction");
+        }
+      }
+    }
   }
 
   void _createHead() async {
@@ -292,6 +367,8 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   void dispose() {
     headTextEditingController.dispose();
+    amountTextEditingController.dispose();
+    descriptionTextEditingController.dispose();
     super.dispose();
   }
 }

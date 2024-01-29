@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum BestTutorSite { income, expense }
+enum BestTutorSite { income, expense, contra }
 
 class MyRadioButton extends StatefulWidget {
   final Function(int) onSubmit;
@@ -43,6 +43,19 @@ class _MyRadioButtonState extends State<MyRadioButton> {
               setState(() {
                 site = value!;
                 widget.onSubmit(2);
+              });
+            },
+          ),
+        ),
+        ListTile(
+          title: const Text('Contra'),
+          leading: Radio(
+            value: BestTutorSite.contra,
+            groupValue: site,
+            onChanged: (BestTutorSite? value) {
+              setState(() {
+                site = value!;
+                widget.onSubmit(3);
               });
             },
           ),

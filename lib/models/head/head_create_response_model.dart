@@ -12,10 +12,6 @@ class HeadCreateResponseModel with _$HeadCreateResponseModel {
     required bool isAuthorized,
     required String message,
     required String messageType,
-    required HeadData data,
-    @Default('192.168.1.1') String CreatedIp,
-    @Default(0) int UpdatedBy,
-    @Default('192.169.1.1') String UpdatedIp,
   }) = _HeadCreateResponseModel;
 
   factory HeadCreateResponseModel.fromJson(Map<String, dynamic> json) =>

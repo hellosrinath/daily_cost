@@ -46,9 +46,10 @@ class _HeadPageState extends State<HeadPage> {
       body: ListView.builder(
         itemCount: headItem.length,
         itemBuilder: (BuildContext context, int index) {
+          int type = headItem[index].type;
           return ListTile(
             title: Text(headItem[index].name),
-            subtitle: const Text("test data"),
+            subtitle: Text((type == 1) ? "Income Head" : "Expense Head"),
             leading: const Icon(Icons.currency_bitcoin),
           );
         },

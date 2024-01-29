@@ -7,6 +7,8 @@ import 'package:daily_cost/models/head/head_create_response_model.dart';
 import 'package:daily_cost/models/head/head_list_data.dart';
 import 'package:daily_cost/models/login/app_user.dart';
 import 'package:daily_cost/models/login/auth_response_model.dart';
+import 'package:daily_cost/models/transaction/transaction_create_param.dart';
+import 'package:daily_cost/models/transaction/transaction_response.dart';
 import 'package:daily_cost/utils/helper_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -62,16 +64,54 @@ class AppDataSource extends DataSource {
       debugPrint("createHead: $map");
       final status = map['status'];
       final isAuthorized = map['isAuthorized'];
+      final message = map['message'];
+      final messageType = map['messageType'];
       if (status && isAuthorized) {
-        final headResponseModel = HeadCreateResponseModel.fromJson(map);
-        debugPrint("createHead: $headResponseModel");
-        return headResponseModel;
+        return HeadCreateResponseModel(
+          status: status,
+          isAuthorized: isAuthorized,
+          message: message,
+          messageType: messageType,
+        );
       } else {
         return null;
       }
     } catch (error) {
       return null;
     }
+  }
+
+  @override
+  Future<TransactionResponse?> createTransaction(
+      TransactionCreateParam transactionCreateParam) async {
+    final url = '$baseUrl${'Transaction/Create'}';
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: await authHeader,
+          body: json.encode(transactionCreateParam.toJson()));
+
+      final map = json.decode(response.body);
+      debugPrint("transactionCreate: $map");
+      //status: true, isAuthorized: true, message: Success, data save done!, messageType: Success
+      final status = map['status'];
+      final isAuthorized = map['isAuthorized'];
+      final message = map['message'];
+      final messageType = map['messageType'];
+      if (status && isAuthorized) {
+        debugPrint("transactionCreate: $status - $isAuthorized");
+        return TransactionResponse(
+          status: status,
+          isAuthorized: isAuthorized,
+          message: message,
+          messageType: messageType,
+        );
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
   }
 
   @override
