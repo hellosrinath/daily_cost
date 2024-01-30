@@ -14,8 +14,9 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   bool isFirst = true;
-  String fromDate = '2021-01-01';
-  String toDate = '2024-02-01';
+  String fromDate =
+      getFormattedDate(DateTime.now().subtract(const Duration(days: 7)));
+  String toDate = getFormattedDate(DateTime.now());
   List<TransactionData> transList = [];
 
   @override
@@ -43,15 +44,42 @@ class _DashboardState extends State<Dashboard> {
         backgroundColor: Colors.blueAccent,
         title: const Text('Dashboard'),
       ),
-      body: ListView.builder(
-        itemCount: transList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            title: Text(transList[index].remarks),
-            subtitle: Text("Amount: ${transList[index].amount}"),
-            leading: const Icon(Icons.currency_bitcoin),
-          );
-        },
+      body: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Text(
+                'Choose Date Range',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {},
+                child: Text('$fromDate - $toDate'),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: transList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(transList[index].remarks),
+                  subtitle: Text("Amount: ${transList[index].amount}"),
+                  leading: const Icon(Icons.currency_bitcoin),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

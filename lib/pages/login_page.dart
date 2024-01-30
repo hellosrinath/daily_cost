@@ -77,8 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 20),
                 Center(
                   child: SizedBox(
-                    width: 100,
-                    height: 50,
+                    width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _login,
                       child: const Text(
@@ -109,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
         debugPrint("Login Response: ${response.user.userName}");
         showMessage(context, 'Welcome Back ${response.user.userName}');
         Navigator.pushReplacementNamed(context, routeNameMyBottomBar);
-      }else{
+      } else {
         showMessage(context, 'Login Failed');
       }
     } else {
