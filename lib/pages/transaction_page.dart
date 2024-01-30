@@ -30,6 +30,14 @@ class _TransactionPageState extends State<TransactionPage> {
   List<HeadItem> headItemCredit = [];
   List<HeadItem> headItemDebit = [];
 
+  DateTime? transactionDate;
+
+  @override
+  void initState() {
+    transactionDate = DateTime.now();
+    super.initState();
+  }
+
   @override
   void didChangeDependencies() {
     if (isFirst) {
@@ -98,6 +106,20 @@ class _TransactionPageState extends State<TransactionPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(height: 20.0),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Text('Choose your desire Date'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: ElevatedButton(
+                          onPressed: _selectDate,
+                          child: Text(transactionDate == null
+                              ? "No Date Chosen"
+                              : getFormattedDate(transactionDate!)),
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: TextFormField(
@@ -112,6 +134,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             }
                             return null;
                           },
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                       const SizedBox(height: 20.0),
@@ -129,6 +152,8 @@ class _TransactionPageState extends State<TransactionPage> {
                             }
                             return null;
                           },
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
                         ),
                       ),
                       const SizedBox(height: 20.0),
@@ -262,6 +287,20 @@ class _TransactionPageState extends State<TransactionPage> {
     );
   }
 
+  void _selectDate() async {
+    final selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(3000),
+    );
+    if (selectedDate != null) {
+      setState(() {
+        transactionDate = selectedDate;
+      });
+    }
+  }
+
   void _showDropdown(bool isCreditHead) {
     showModalBottomSheet(
       context: context,
@@ -313,7 +352,7 @@ class _TransactionPageState extends State<TransactionPage> {
           final response =
               await Provider.of<AppDataProvider>(context, listen: false)
                   .createTransaction(TransactionCreateParam(
-            TransDate: "2024-01-30",
+            TransDate: getFormattedDate(transactionDate!),
             CreditCode: creditCode,
             DebitCode: debitCode,
             Amount: int.parse(amountTextEditingController.text),
@@ -355,6 +394,8 @@ class _TransactionPageState extends State<TransactionPage> {
         if (response.status && response.isAuthorized) {
           showMessage(context, response.message);
           headTextEditingController.text = '';
+          // refresh head list
+          getHeadData();
         } else {
           showMessage(context, response.message);
         }

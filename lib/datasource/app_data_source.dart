@@ -9,6 +9,7 @@ import 'package:daily_cost/models/login/app_user.dart';
 import 'package:daily_cost/models/login/auth_response_model.dart';
 import 'package:daily_cost/models/transaction/transaction_create_param.dart';
 import 'package:daily_cost/models/transaction/transaction_response.dart';
+import 'package:daily_cost/models/transaction_list/transaction_list_response.dart';
 import 'package:daily_cost/utils/helper_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -137,5 +138,31 @@ class AppDataSource extends DataSource {
       return null;
     }
     return null;
+  }
+
+  @override
+  Future<TransactionListResponse?> getPeriodicTransaction(
+      String fromDate, String toDate) async {
+    final url =
+        '$baseUrl${'Transaction/GetTransactionPeriodWise?FromDate=$fromDate&ToDate=$toDate'}';
+
+    try {
+      final response =
+          await http.get(Uri.parse(url), headers: await authHeader);
+      final map = json.decode(response.body);
+      //status: true, isAuthorized: true
+      final status = map['status'];
+      final isAuthorized = map['isAuthorized'];
+      debugPrint('transactionList: $map');
+      if (status && isAuthorized) {
+        final transRes = TransactionListResponse.fromJson(map);
+        return transRes;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+
   }
 }

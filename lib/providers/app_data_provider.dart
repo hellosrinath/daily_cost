@@ -9,6 +9,7 @@ import '../models/head/head_create_response_model.dart';
 import '../models/head/head_list_data.dart';
 import '../models/login/auth_response_model.dart';
 import '../models/transaction/transaction_response.dart';
+import '../models/transaction_list/transaction_list_response.dart';
 
 class AppDataProvider extends ChangeNotifier {
   final DataSource _dataSource = AppDataSource();
@@ -35,6 +36,12 @@ class AppDataProvider extends ChangeNotifier {
   Future<TransactionResponse?> createTransaction(
       TransactionCreateParam transactionCreateParam) async {
     final response = await _dataSource.createTransaction(transactionCreateParam);
+    if(response == null) return null;
+    return response;
+  }
+
+  Future<TransactionListResponse?> getPeriodicTransaction(String fromDate, String toDate) async{
+    final response = await _dataSource.getPeriodicTransaction(fromDate, toDate);
     if(response == null) return null;
     return response;
   }

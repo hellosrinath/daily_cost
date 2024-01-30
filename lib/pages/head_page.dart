@@ -1,10 +1,8 @@
 import 'package:daily_cost/models/head/head_item.dart';
 import 'package:daily_cost/providers/app_data_provider.dart';
-import 'package:daily_cost/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/head/head_data.dart';
 
 class HeadPage extends StatefulWidget {
   const HeadPage({super.key});
