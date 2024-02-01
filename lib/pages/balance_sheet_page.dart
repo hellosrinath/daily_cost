@@ -5,18 +5,16 @@ class BalanceSheetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Balance Sheet",
-                textScaler: TextScaler.noScaling,
-              ),
-            ],
-          ),
+    return const Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Balance Sheet",
+              textScaler: TextScaler.noScaling,
+            ),
+          ],
         ),
       ),
     );

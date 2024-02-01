@@ -7,18 +7,11 @@ import 'package:flutter/material.dart';
 
 import '../models/head/head_create_response_model.dart';
 import '../models/head/head_list_data.dart';
-import '../models/login/auth_response_model.dart';
 import '../models/transaction/transaction_response.dart';
 import '../models/transaction_list/transaction_list_response.dart';
 
 class AppDataProvider extends ChangeNotifier {
   final DataSource _dataSource = AppDataSource();
-
-  Future<AuthResponseModel?> login(AppUser user) async {
-    final response = await _dataSource.login(user);
-    if (response == null) return null;
-    return response;
-  }
 
   Future<HeadCreateResponseModel?> createHead(
       HeadCreateModel headCreateModel) async {
@@ -35,14 +28,25 @@ class AppDataProvider extends ChangeNotifier {
 
   Future<TransactionResponse?> createTransaction(
       TransactionCreateParam transactionCreateParam) async {
-    final response = await _dataSource.createTransaction(transactionCreateParam);
-    if(response == null) return null;
+    final response =
+        await _dataSource.createTransaction(transactionCreateParam);
+    if (response == null) return null;
     return response;
   }
 
-  Future<TransactionListResponse?> getPeriodicTransaction(String fromDate, String toDate) async{
+  bool transListLoading = false;
+  bool backTransList = false;
+
+  Future<TransactionListResponse?> getPeriodicTransaction(
+      String fromDate, String toDate) async {
+    transListLoading = true;
+    notifyListeners();
+
     final response = await _dataSource.getPeriodicTransaction(fromDate, toDate);
-    if(response == null) return null;
+
+    backTransList = true;
+    transListLoading = false;
+    notifyListeners();
     return response;
   }
 }
