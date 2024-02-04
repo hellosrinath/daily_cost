@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:daily_cost/customwidgets/my_radio_button.dart';
 import 'package:daily_cost/models/head/head_create_model.dart';
 import 'package:daily_cost/models/transaction/transaction_create_param.dart';
@@ -7,7 +5,7 @@ import 'package:daily_cost/providers/app_data_provider.dart';
 import 'package:daily_cost/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:searchfield/searchfield.dart';
 import '../models/head/head_item.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -24,6 +22,8 @@ class _TransactionPageState extends State<TransactionPage> {
 
   final amountTextEditingController = TextEditingController();
   final descriptionTextEditingController = TextEditingController();
+  final creditController = TextEditingController();
+  final debitController = TextEditingController();
 
   bool isFirst = true;
   List<HeadItem> headItem = [];
@@ -68,6 +68,20 @@ class _TransactionPageState extends State<TransactionPage> {
   int selectedCreditCode = 0;
   String selectedDebitValue = '--Select--';
   int selectedDebitCode = 0;
+
+  bool containsHead(String text, isCredit) {
+    for (HeadItem item in headItem) {
+      if (item.name.toLowerCase() == text.toLowerCase()) {
+        if (isCredit) {
+          selectedCreditCode = item.id;
+        } else {
+          selectedDebitCode = item.id;
+        }
+        return true;
+      }
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +134,36 @@ class _TransactionPageState extends State<TransactionPage> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text('Select Credit Head'),
+                            ),
+                            SizedBox(width: 30),
+                            Expanded(
+                              child: Text('Select Debit Head'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: customSearchDropdownMenu(
+                                    headItem, creditController, true)),
+                            const SizedBox(width: 20),
+                            Expanded(
+                                child: customSearchDropdownMenu(
+                                    headItem, debitController, false)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: TextFormField(
@@ -157,53 +201,6 @@ class _TransactionPageState extends State<TransactionPage> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text('Select Credit Head'),
-                            ),
-                            SizedBox(width: 30),
-                            Expanded(
-                              child: Text('Select Debit Head'),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                color: const Color(0xFFEAE4EF),
-                                child: TextButton(
-                                  onPressed: () {
-                                    _showDropdown(true);
-                                  },
-                                  child: Text(selectedCreditValue),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 30),
-                            Expanded(
-                              child: Container(
-                                color: const Color(0xFFEAE4EF),
-                                child: TextButton(
-                                  onPressed: () {
-                                    _showDropdown(false);
-                                  },
-                                  child: Text(selectedDebitValue),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: SizedBox(
@@ -214,10 +211,7 @@ class _TransactionPageState extends State<TransactionPage> {
                               backgroundColor: Colors.blueAccent,
                               foregroundColor: Colors.white,
                             ),
-                            onPressed: () {
-                              _saveTransactions(
-                                  selectedCreditCode, selectedDebitCode);
-                            },
+                            onPressed: _saveTransactions,
                             child: const Text(
                               'Save',
                               style: TextStyle(
@@ -287,6 +281,52 @@ class _TransactionPageState extends State<TransactionPage> {
     );
   }
 
+  SearchField customSearchDropdownMenu(
+      List<HeadItem> headItem, TextEditingController controller, isCredit,
+      {String hint = 'Enter Head'}) {
+    return SearchField<HeadItem>(
+      controller: controller,
+      hint: hint,
+      suggestions: headItem
+          .map(
+            (e) => SearchFieldListItem<HeadItem>(
+              e.name,
+              item: e,
+              // Use child to show Custom Widgets in the suggestions
+              // defaults to Text widget
+              child: Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    e.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+          .toList(),
+      validator: (x) {
+        if (!containsHead(x!, isCredit) || x.isEmpty) {
+          return 'Please Enter a valid state';
+        }
+        return null;
+      },
+      searchInputDecoration: InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.black.withOpacity(0.8),
+          ),
+        ),
+        border: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red),
+        ),
+      ),
+    );
+  }
+
   void _selectDate() async {
     final selectedDate = await showDatePicker(
       context: context,
@@ -342,40 +382,39 @@ class _TransactionPageState extends State<TransactionPage> {
     });
   }
 
-  void _saveTransactions(int creditCode, int debitCode) async {
-    if (formKey.currentState!.validate()) {
-      if (selectedCreditValue == "--Select--" ||
-          selectedDebitValue == "--Select--") {
-        showMessage(context, 'Select Credit/Debit Head');
-      } else {
-        try {
-          final response =
-              await Provider.of<AppDataProvider>(context, listen: false)
-                  .createTransaction(TransactionCreateParam(
-            TransDate: getFormattedDate(transactionDate!),
-            CreditCode: creditCode,
-            DebitCode: debitCode,
-            Amount: int.parse(amountTextEditingController.text),
-            CreatedBy: await getUserId(),
-            Remarks: descriptionTextEditingController.text,
-          ));
-          if (!context.mounted) return;
-          if (response != null) {
-            if (response.status && response.isAuthorized) {
-              showMessage(context, response.message);
-              amountTextEditingController.text = '';
-              descriptionTextEditingController.text = '';
-            } else {
-              showMessage(context, response.message);
-            }
+  void _saveTransactions() async {
+    if (formKey.currentState!.validate() &&
+        selectedCreditCode != 0 &&
+        selectedDebitCode != 0) {
+      try {
+        final response =
+            await Provider.of<AppDataProvider>(context, listen: false)
+                .createTransaction(TransactionCreateParam(
+          TransDate: getFormattedDate(transactionDate!),
+          CreditCode: selectedCreditCode,
+          DebitCode: selectedDebitCode,
+          Amount: int.parse(amountTextEditingController.text),
+          CreatedBy: await getUserId(),
+          Remarks: descriptionTextEditingController.text,
+        ));
+        if (!context.mounted) return;
+        if (response != null) {
+          if (response.status && response.isAuthorized) {
+            showMessage(context, response.message);
+            amountTextEditingController.text = '';
+            descriptionTextEditingController.text = '';
           } else {
-            showMessage(context, "Failed to create Transaction");
+            showMessage(context, response.message);
           }
-        } catch (e) {
+        } else {
           showMessage(context, "Failed to create Transaction");
         }
+      } catch (e) {
+        showMessage(context, "Failed to create Transaction");
       }
     }
+    debugPrint('creditHead: ${creditController.text}');
+    debugPrint('debitHead: ${debitController.text}');
   }
 
   void _createHead() async {

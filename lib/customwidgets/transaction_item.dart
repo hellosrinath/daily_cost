@@ -7,10 +7,13 @@ enum PopUpMenuType { edit, delete }
 class TransactionItems extends StatelessWidget {
   const TransactionItems({
     super.key,
-    required this.transList,
+    required this.transactionData,
+    required this.editDelete,
   });
 
-  final TransactionData transList;
+  final Function(TransactionData?, PopUpMenuType) editDelete;
+
+  final TransactionData transactionData;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class TransactionItems extends StatelessWidget {
           shape: BoxShape.rectangle,
           border: Border.all(
             color: Colors.black26,
-            width: 2,
+            width: 1,
           ),
         ),
         child: Column(
@@ -41,7 +44,7 @@ class TransactionItems extends StatelessWidget {
                     const Icon(Icons.calendar_month),
                     const SizedBox(width: 8),
                     Text(
-                      transList.transDate.split("T").first,
+                      transactionData.transDate.split("T").first,
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -53,7 +56,9 @@ class TransactionItems extends StatelessWidget {
                 Card(
                   shape: const CircleBorder(),
                   child: PopupMenuButton<PopUpMenuType>(
-                    onSelected: (selectedMenu) {},
+                    onSelected: (selectedMenu) {
+                      editDelete(transactionData, selectedMenu);
+                    },
                     itemBuilder: (context) => [
                       const PopupMenuItem(
                         value: PopUpMenuType.edit,
@@ -83,8 +88,8 @@ class TransactionItems extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                headDesign(transList.creditHead),
-                headDesign(transList.debitHead),
+                headDesign(transactionData.creditHead),
+                headDesign(transactionData.debitHead),
               ],
             ),
             Row(
@@ -92,13 +97,13 @@ class TransactionItems extends StatelessWidget {
               children: [
                 Expanded(
                     child: Text(
-                  'Remarks: ${transList.remarks}',
+                  'Remarks: ${transactionData.remarks}',
                   style: const TextStyle(
                     fontSize: 15,
                   ),
                 )),
                 Text(
-                  'Amount: ${transList.amount}',
+                  'Amount: ${transactionData.amount}',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

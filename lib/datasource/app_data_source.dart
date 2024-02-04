@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:daily_cost/datasource/data_source.dart';
+import 'package:daily_cost/models/balance_sheet/balance_sheet_response.dart';
+import 'package:daily_cost/models/delete_transaction/delete_transaction_param.dart';
+import 'package:daily_cost/models/delete_transaction/transaction_delete_response.dart';
 import 'package:daily_cost/models/head/head_create_model.dart';
 import 'package:daily_cost/models/head/head_create_response_model.dart';
 import 'package:daily_cost/models/head/head_list_data.dart';
@@ -116,6 +119,37 @@ class AppDataSource extends DataSource {
   }
 
   @override
+  Future<TransactionDeleteResponse?> deleteTransaction(
+      DeleteTransactionParam deleteTransactionParam) async {
+    final url = '$baseUrl${'Transaction/Delete'}';
+
+    try {
+      final response = await http.post(Uri.parse(url),
+          headers: await authHeader,
+          body: json.encode(deleteTransactionParam.toJson()));
+      final map = json.decode(response.body);
+      debugPrint('transactionDelete: $map');
+      //status: true, isAuthorized: true, message: Success, data delete done!,
+      final status = map['status'];
+      final isAuthorized = map['isAuthorized'];
+      final message = map['message'];
+      final messageType = map['messageType'];
+      if (status && isAuthorized) {
+        return TransactionDeleteResponse(
+          status: status,
+          isAuthorized: isAuthorized,
+          message: message,
+          messageType: messageType,
+        );
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
   Future<HeadListData?> gettingHeadList() async {
     final url = '$baseUrl${'Head/GetHeadList'}';
     try {
@@ -163,6 +197,28 @@ class AppDataSource extends DataSource {
     } catch (error) {
       return null;
     }
+  }
 
+  @override
+  Future<BalanceSheetResponse?> getBalanceSheet() async {
+    final url = '$baseUrl${'Transaction/GetBalanceSheet'}';
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: await authHeader,
+      );
+      final map = json.decode(response.body);
+      final status = map['status'];
+      final isAuthorized = map['isAuthorized'];
+      if (status && isAuthorized) {
+        debugPrint('balanceSheet: $map');
+        final data = BalanceSheetResponse.fromJson(map);
+        return data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
   }
 }

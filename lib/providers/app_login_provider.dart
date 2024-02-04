@@ -6,7 +6,6 @@ import '../models/login/app_user.dart';
 import '../models/login/auth_response_model.dart';
 
 class AppLoginProvider extends ChangeNotifier {
-
   final DataSource _dataSource = AppDataSource();
 
   bool loading = false;
@@ -18,14 +17,9 @@ class AppLoginProvider extends ChangeNotifier {
 
     final response = await _dataSource.login(user);
 
-    if (response == null) {
-      return null;
-    } else {
-      isBack = true;
-    }
     loading = false;
+    isBack = true;
     notifyListeners();
     return response;
   }
 }
-
