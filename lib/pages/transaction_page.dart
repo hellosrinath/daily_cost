@@ -8,6 +8,13 @@ import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 import '../models/head/head_item.dart';
 
+class Head {
+  final String name;
+  final int id;
+
+  Head({required this.name, required this.id});
+}
+
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
 
@@ -27,6 +34,7 @@ class _TransactionPageState extends State<TransactionPage> {
 
   bool isFirst = true;
   List<HeadItem> headItem = [];
+  var headList = <Head>[];
   List<HeadItem> headItemCredit = [];
   List<HeadItem> headItemDebit = [];
 
@@ -35,15 +43,8 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   void initState() {
     transactionDate = DateTime.now();
+    getHeadData();
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (isFirst) {
-      getHeadData();
-    }
-    super.didChangeDependencies();
   }
 
   void getHeadData() async {
@@ -58,6 +59,7 @@ class _TransactionPageState extends State<TransactionPage> {
       for (HeadItem item in headItem) {
         if (item.type == 1) headItemCredit.add(item);
         if (item.type == 2) headItemDebit.add(item);
+        headList.add(Head(name: item.name, id: item.id));
       }
     }
     setState(() {});
@@ -70,7 +72,7 @@ class _TransactionPageState extends State<TransactionPage> {
   int selectedDebitCode = 0;
 
   bool containsHead(String text, isCredit) {
-    for (HeadItem item in headItem) {
+    for (Head item in headList) {
       if (item.name.toLowerCase() == text.toLowerCase()) {
         if (isCredit) {
           selectedCreditCode = item.id;
@@ -149,17 +151,21 @@ class _TransactionPageState extends State<TransactionPage> {
                           ],
                         ),
                       ),
+                      //test
+
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
                         child: Row(
                           children: [
                             Expanded(
-                                child: customSearchDropdownMenu(
-                                    headItem, creditController, true)),
+                              child: searchFieWithDropdownMenu(
+                                  true, creditController),
+                            ),
                             const SizedBox(width: 20),
                             Expanded(
-                                child: customSearchDropdownMenu(
-                                    headItem, debitController, false)),
+                              child: searchFieWithDropdownMenu(
+                                  false, debitController),
+                            ),
                           ],
                         ),
                       ),
@@ -281,28 +287,27 @@ class _TransactionPageState extends State<TransactionPage> {
     );
   }
 
-  SearchField customSearchDropdownMenu(
-      List<HeadItem> headItem, TextEditingController controller, isCredit,
-      {String hint = 'Enter Head'}) {
-    return SearchField<HeadItem>(
+  SearchField<Head> searchFieWithDropdownMenu(
+      bool isCredit, TextEditingController controller) {
+    return SearchField<Head>(
+      hint: 'Type head...',
       controller: controller,
-      hint: hint,
-      suggestions: headItem
+      suggestions: headList
           .map(
-            (e) => SearchFieldListItem<HeadItem>(
+            (e) => SearchFieldListItem<Head>(
               e.name,
               item: e,
               // Use child to show Custom Widgets in the suggestions
               // defaults to Text widget
-              child: Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    e.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
                     ),
-                  ),
+                    Text(e.name),
+                  ],
                 ),
               ),
             ),
@@ -310,20 +315,10 @@ class _TransactionPageState extends State<TransactionPage> {
           .toList(),
       validator: (x) {
         if (!containsHead(x!, isCredit) || x.isEmpty) {
-          return 'Please Enter a valid state';
+          return 'Please Enter a valid State';
         }
         return null;
       },
-      searchInputDecoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black.withOpacity(0.8),
-          ),
-        ),
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.red),
-        ),
-      ),
     );
   }
 
@@ -384,8 +379,7 @@ class _TransactionPageState extends State<TransactionPage> {
 
   void _saveTransactions() async {
     if (formKey.currentState!.validate() &&
-        selectedCreditCode != 0 &&
-        selectedDebitCode != 0) {
+        selectedCreditCode != selectedDebitCode) {
       try {
         final response =
             await Provider.of<AppDataProvider>(context, listen: false)
@@ -403,6 +397,8 @@ class _TransactionPageState extends State<TransactionPage> {
             showMessage(context, response.message);
             amountTextEditingController.text = '';
             descriptionTextEditingController.text = '';
+            creditController.text = '';
+            debitController.text = '';
           } else {
             showMessage(context, response.message);
           }
@@ -412,6 +408,9 @@ class _TransactionPageState extends State<TransactionPage> {
       } catch (e) {
         showMessage(context, "Failed to create Transaction");
       }
+    } else if (selectedCreditCode == selectedDebitCode) {
+      showMessage(context,
+          "Please, Check your input data. Credit head and debit head must not be same.");
     }
     debugPrint('creditHead: ${creditController.text}');
     debugPrint('debitHead: ${debitController.text}');
@@ -449,6 +448,8 @@ class _TransactionPageState extends State<TransactionPage> {
     headTextEditingController.dispose();
     amountTextEditingController.dispose();
     descriptionTextEditingController.dispose();
+    debitController.dispose();
+    creditController.dispose();
     super.dispose();
   }
 }

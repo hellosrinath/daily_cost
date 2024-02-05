@@ -6,6 +6,8 @@ import 'package:daily_cost/pages/transaction_report_page.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
+import '../customwidgets/search_field.dart';
+
 class MyBottomBar extends StatefulWidget {
   const MyBottomBar({super.key});
 
@@ -22,7 +24,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
     const HeadPage(),
     const TransactionPage(),
     const TransactionReportPage(),
-    const BalanceSheetPage()
+    const SearchFieldSample()
   ];
 
   @override
