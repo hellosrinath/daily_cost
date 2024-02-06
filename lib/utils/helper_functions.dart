@@ -54,6 +54,26 @@ Future<int> getCompanyId() async {
   return pref.getInt(appCompanyId) ?? 0;
 }
 
+Future<bool> saveLoginUserName(String loginUserName) async {
+  final pref = await SharedPreferences.getInstance();
+  return pref.setString(appLoginUserName, loginUserName);
+}
+
+Future<String> getLoginUserName() async {
+  final pref = await SharedPreferences.getInstance();
+  return pref.getString(appLoginUserName) ?? '';
+}
+
+Future<bool> saveLoginPassword(String loginPassword) async {
+  final pref = await SharedPreferences.getInstance();
+  return pref.setString(appLoginPassword, loginPassword);
+}
+
+Future<String> getLoginPassword() async {
+  final pref = await SharedPreferences.getInstance();
+  return pref.getString(appLoginPassword) ?? '';
+}
+
 Future<bool> saveUserId(int userId) async {
   final pref = await SharedPreferences.getInstance();
   return pref.setInt(appUserId, userId);

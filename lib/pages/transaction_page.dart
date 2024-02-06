@@ -298,7 +298,6 @@ class _TransactionPageState extends State<TransactionPage> {
               e.name,
               item: e,
               // Use child to show Custom Widgets in the suggestions
-              // defaults to Text widget
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

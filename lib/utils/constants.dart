@@ -7,5 +7,7 @@ const String routeNameTransaction = 'transactions';
 const String routeNameTransactionReport = 'transaction_report';
 const String accessToken = 'accessToken';
 const String appUserName = 'appUserName';
+const String appLoginUserName = 'appLoginUserName';
+const String appLoginPassword = 'appLoginPassword';
 const String appCompanyId = 'appCompanyId';
 const String appUserId = 'appUserId';

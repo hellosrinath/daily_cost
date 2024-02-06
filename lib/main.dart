@@ -2,6 +2,7 @@ import 'package:daily_cost/pages/balance_sheet_page.dart';
 import 'package:daily_cost/pages/dashboard.dart';
 import 'package:daily_cost/pages/head_page.dart';
 import 'package:daily_cost/pages/login_page.dart';
+import 'package:daily_cost/pages/login_page_two.dart';
 import 'package:daily_cost/pages/my_bottom_bar.dart';
 import 'package:daily_cost/pages/transaction_page.dart';
 import 'package:daily_cost/pages/transaction_report_page.dart';
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         routeNameDashboard: (context) => const Dashboard(),
         routeNameHeadPage: (context) => const HeadPage(),
         routeNameBalanceSheet: (context) => const BalanceSheetPage(),
-        routeNameLogin: (context) => const LoginPage(),
+        routeNameLogin: (context) => const LoginPageTwo(),
         routeNameTransaction: (context) => const TransactionPage(),
         routeNameTransactionReport: (context) => const TransactionReportPage()
       },
